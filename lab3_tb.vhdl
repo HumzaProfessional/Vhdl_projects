@@ -31,18 +31,26 @@ architecture Behavioral of MovingLED_TB is
     signal segDisplayOnes: std_logic_vector(6 downto 0);
     signal segDisplayTens: std_logic_vector(6 downto 0);
 
-    constant clk_period : time := 10 ns;  -- Define clock period
+   constant ACTIVE : std_logic := '1';
 
 begin
 
     -- Clock generation process.
-    clock_proc: process
-    begin
-        clock <= '0';
-        wait for clk_period/2;
-        clock <= '1';
-        wait for clk_period/2;
-    end process;
+   SYSTEM_CLOCK: process
+  begin
+    clock <= not ACTIVE;
+    wait <= 5 ns;
+    clock <= ACTIVE;
+    wait <= 5 ns;
+end process;
+
+SYSTEM_RESET process
+begon
+    reset <= ACTIVE;
+    wait for 100ns;
+    reset <= not ACTIVE;
+    wait;
+end process;
 
     -- Instantiate the Unit Under Test (UUT).
     UUT: MovingLED
@@ -57,35 +65,37 @@ begin
             segDisplayTens=> segDisplayTens
         );
 
-    -- Stimulus process using for loops to simulate LED shifting.
-    stimulus_process: process
+    -- process using for loops to emulate LED shifting.
+    SIGNAL_DRIVER: process
         variable i: integer;
     begin
-        -- Apply reset at start.
-        reset <= '1';
+        -- Reset at intilzation 
+        reset <= ACTIVE;
         wait for 20 ns;
         reset <= '0';
         wait for 20 ns;
 
-        -- Assume the LED starts at the far left (or at a defined position after reset).
-
-        -- Shift right across the 16 LEDs.
-        for i in 0 to 15 loop
-            shiftRight <= '1';    -- simulate right button press
-            wait for clk_period;
-            shiftRight <= '0';
-            wait for clk_period;
-        end loop;
-
-        wait for 20 ns;  -- pause between directions
+        -- Assume the LED starts at the far right (or at a defined position after reset).
 
         -- Shift left back across the 16 LEDs.
         for i in 0 to 15 loop
             shiftLeft <= '1';     -- simulate left button press
-            wait for clk_period;
+            wait for 10 ns;
             shiftLeft <= '0';
-            wait for clk_period;
+            wait for 10 ns;
         end loop;
+
+     wait for 20 ns;  -- pause between directions
+                
+        -- Shift right across the 16 LEDs.
+        for i in 0 to 15 loop
+            shiftRight <= '1';    -- simulate right button press
+            wait for 10 ns;
+            shiftRight <= '0'; 
+            wait for 10 ns;
+        end loop;
+
+        
 
         wait;  -- suspend process forever
     end process;
