@@ -44,7 +44,7 @@ begin
     wait <= 5 ns;
 end process;
 
-SYSTEM_RESET process
+SYSTEM_RESET: process
 begon
     reset <= ACTIVE;
     wait for 100ns;
