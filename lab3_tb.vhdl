@@ -7,7 +7,7 @@ end MovingLED_TB;
 
 architecture Behavioral of MovingLED_TB is
 
-    -- Component declaration for the top-level MovingLED design.
+    -- Component declaration for MovingLED design.
     component MovingLED
         port(
             shiftLeft     : in  std_logic;
