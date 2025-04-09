@@ -14,7 +14,7 @@ entity lfsr_random_gen is
           
 end lfsr_random;
 
-architecture random_gen  of lfsr_random is
+architecture random_gen_ARCH  of lfsr_random is
     signal lfsr_reg : STD_LOGIC_VECTOR(7 downto 0) := "10101010"; -- Seed
 begin
     process(clock, reset)
@@ -25,9 +25,13 @@ begin
             lfsr_reg <= lfsr_reg(6 downto 0) & (lfsr_reg(7) xor lfsr_reg(5));
         end if;
     end process;
-  
+  SHIFT_REG process (clock, reset)
+begin 
+  if (reset = ACTIVE) then
+     dataOUT <= (others => '0');
+  elsif (risingedge(clock)) then
     
-    rnd <= lfsr_reg;
+    rnd <= lfsr_reg-ARCH;
 end Behavioral;
 
   
